@@ -1,0 +1,18 @@
+version: "2"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    command: "npm start"

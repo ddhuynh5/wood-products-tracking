@@ -1,0 +1,39 @@
+# virtual environments
+venv
+
+# Python files
+*.pyc
+__pycache__
+
+# Python Notebook dot files
+.ipynb*
+
+# Secret environment settings
+.env
+env
+.env.sample
+local_settings.py.sample
+local_settings.py
+
+# Node and Webpack files
+node_modules
+npm-debug.log
+webpack-stats*
+
+# Static assests
+staticfiles
+static_cdn
+media_cdn
+backend/static
+frontend/build
+
+# Ignore sqlite
+db.sqlite3
+
+# Apple files
+.DS_Store
+
+.vscode
+.gitignore
+.dockerignore
+README.md
