@@ -25,5 +25,6 @@ router.register(r"wood_products", views.WoodProductView, "wood_product")
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
-    path('', index),
+    path('time/', index),
+    path('', views.HelloWorld.as_view()),
 ]
