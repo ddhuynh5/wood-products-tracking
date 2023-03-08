@@ -9,8 +9,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import SignIn from './components/registration/SignIn';
 import SignUp from './components/registration/SignUp';
-import Dashboard from './components/dash/Dashboard';
-import ContactUs from './components/ContactUs'
+import Dashboard from './components/Dashboard';
+import ContactUs from './components/ContactUs';
+import Reports from './components/reports/Reports';
+import Copyright from './components/Copyright';
+import SideDrawer from './components/SideDrawer';
+import QRCodeGen from './components/QRCode';
 
 const theme = createTheme({
   typography: {
@@ -26,13 +30,17 @@ function App() {
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        {/* <SideDrawer /> */}
         <Routes>
           <Route exact path="/" element={<SignIn />} />
           <Route path="/dash" element={<Dashboard />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/contact" element={<ContactUs />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/qrcode" element={<QRCodeGen />} />
         </Routes>
+        <Copyright sx={{ pt: 4 }} />
       </ThemeProvider>
     </BrowserRouter>
 

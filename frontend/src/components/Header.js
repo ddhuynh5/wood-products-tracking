@@ -1,99 +1,101 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
-import MenuIcon from '@mui/icons-material/Menu';
-import Button from '@mui/material/Button';
+import { Link as RLink } from 'react-router-dom';
+
+import { styled } from '@mui/material/styles';
+import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton'
+import Badge from '@mui/material/Badge';
+import MenuIcon from '@mui/icons-material/Menu';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Fade from '@mui/material/Fade';
+
 
 const drawerWidth = 240;
 
-function Header(props) {
-    const { window } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
+const AppBar = styled(MuiAppBar, {
+    shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+    }),
+    ...(open && {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    }),
+}));
 
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
+export default function Header() {
+    const [open, setOpen] = React.useState(true);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const toggleDrawer = () => {
+        setOpen(!open);
     };
 
-    const drawer = (
-        <div>
-            <Toolbar />
-            <Divider />
-            <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton onClick={handleDrawerToggle}>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-        </div>
-    );
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
 
-    const container = window !== undefined ? () => window().document.body : undefined;
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     return (
-        <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
-            <AppBar position="fixed">
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        sx={{ mr: 2, display: { sm: 'block' } }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Wood Products Tracking
-                    </Typography>
-                    <Box sx={{ marginLeft: "auto", display: { xs: "none", sm: "block" } }}>
-                        <Button color="inherit">Login</Button>
-                        <Button color="inherit">Sign Up</Button>
-                    </Box>
-                </Toolbar>
-            </AppBar>
-            <Box
-                component="nav"
-                sx={{ flexShrink: { sm: 0 } }}
-                aria-label="sidebar items"
+        <AppBar position="absolute" /* open={open} */>
+            <Toolbar
+            /* sx={{
+                pr: '24px', // keep right padding when drawer closed
+            }} */
             >
-                <Drawer
-                    container={container}
-                    variant="temporary"
-                    open={mobileOpen}
-                    onClose={handleDrawerToggle}
-                    ModalProps={{
-                        keepMounted: true,
-                    }}
+                <IconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                    onClick={toggleDrawer}
                     sx={{
-                        display: { xs: 'block' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        marginRight: '36px',
+                        ...(open && { display: 'none' }),
                     }}
                 >
-                    {drawer}
-                </Drawer>
-            </Box>
-        </Box>
+                    <MenuIcon />
+                </IconButton>
+                <Typography
+                    component="h1"
+                    variant="h6"
+                    color="inherit"
+                    noWrap
+                    sx={{ flexGrow: 1 }}
+                >
+                    Landowner Dashboard
+                </Typography>
+                <Button color="inherit" onClick={handleMenu}>
+                    <Badge>
+                        <AccountCircleIcon />
+                    </Badge>
+                </Button>
+                <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                    TransitionComponent={Fade}
+                >
+                    <MenuItem onClick={handleClose}>Profile</MenuItem>
+                    <MenuItem onClick={handleClose}>My account</MenuItem>
+                    <MenuItem onClick={handleClose} component={RLink} to="/signin">Sign Out</MenuItem>
+                </Menu>
+            </Toolbar>
+        </AppBar>
     );
 }
-
-export default Header;
