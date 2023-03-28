@@ -16,15 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from wood_products import views
-from wood_products.views import index
 
 router = routers.DefaultRouter()
-router.register(r"wood_products", views.WoodProductView, "wood_product")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
-    path('time/', index),
-    path('', views.HelloWorld.as_view()),
 ]
