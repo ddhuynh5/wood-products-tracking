@@ -1,30 +1,76 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Papa from "papaparse";
 
 function Data() {
-    const [data, setData] = useState([]);
+    // State to store parsed data
+    const [parsedData, setParsedData] = useState([]);
 
-    useEffect(() => {
-        fetch("\\data\\county_production_sc.csv")
-            .then((response) => response.text())
-            .then((csv) => {
-                Papa.parse(csv, {
-                    header: true,
-                    complete: (result) => {
-                        setData(result.data);
-                    },
+    //State to store table Column name
+    const [tableRows, setTableRows] = useState([]);
+
+    //State to store the values
+    const [values, setValues] = useState([]);
+
+    const changeHandler = (event) => {
+        // Passing file data (event.target.files[0]) to parse using Papa.parse
+        Papa.parse(event.target.files[0], {
+            header: true,
+            skipEmptyLines: true,
+            complete: function (results) {
+                const rowsArray = [];
+                const valuesArray = [];
+
+                // Iterating data to get column name and their values
+                results.data.map((d) => {
+                    rowsArray.push(Object.keys(d));
+                    valuesArray.push(Object.values(d));
                 });
-            });
-    }, []);
+
+                // Parsed Data Response in array format
+                setParsedData(results.data);
+
+                // Filtered Column Names
+                setTableRows(rowsArray[0]);
+
+                // Filtered Values
+                setValues(valuesArray);
+            },
+        });
+    };
 
     return (
         <div>
-            <h1>CSV Data</h1>
-            <ul>
-                {data.map((item, index) => (
-                    <li key={index}>{item.columnName}</li>
-                ))}
-            </ul>
+            {/* File Uploader */}
+            <input
+                type="file"
+                name="file"
+                onChange={changeHandler}
+                accept=".csv"
+                style={{ display: "block", margin: "10px auto" }}
+            />
+            <br />
+            <br />
+            {/* Table */}
+            {/* <table>
+                <thead>
+                    <tr>
+                        {tableRows.map((rows, index) => {
+                            return <th key={index}>{rows}</th>;
+                        })}
+                    </tr>
+                </thead>
+                <tbody>
+                    {values.map((value, index) => {
+                        return (
+                            <tr key={index}>
+                                {value.map((val, i) => {
+                                    return <td key={i}>{val}</td>;
+                                })}
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table> */}
         </div>
     );
 }
