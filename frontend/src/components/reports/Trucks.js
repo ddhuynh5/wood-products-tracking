@@ -79,8 +79,8 @@ export default function Trucks() {
             {/*  <Subtitle>
                 Trucks
             </Subtitle> */}
-            <caption>Green: Pine | Orange: Hardwood</caption>
             <Table size="small">
+                <caption>Green: Pine | Orange: Hardwood</caption>
                 <TableHead>
                     <TableRow>
                         <TableCell>Year</TableCell>
