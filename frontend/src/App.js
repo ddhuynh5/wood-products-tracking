@@ -13,9 +13,8 @@ import Dashboard from "./components/Dashboard";
 import ContactUs from "./components/ContactUs";
 import Reports from "./components/reports/Reports";
 import Copyright from "./components/Copyright";
-import SideDrawer from "./components/SideDrawer";
 import QRCodeGen from "./components/QRCode";
-import Data from "./components/Data";
+import LandingPage from "./components/LandingPage";
 
 const theme = createTheme({
   typography: {
@@ -31,16 +30,14 @@ function App() {
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {/* <SideDrawer /> */}
         <Routes>
-          <Route exact path="/" element={<SignIn />} />
+          <Route exact path="/" element={<LandingPage />} />
           <Route path="/dash" element={<Dashboard />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/qrcode" element={<QRCodeGen />} />
-          <Route path="/data" element={<Data />} />
         </Routes>
         <Copyright sx={{ pt: 4 }} />
       </ThemeProvider>
