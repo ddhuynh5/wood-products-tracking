@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { Box, Button, Typography, Grid, Container } from '@mui/material';
 import Header from "./Header";
 import backgroundImage from '../assets/hero-background.jpg';
+import easy from '../assets/easy.png';
+import realtime from '../assets/realtime.png';
+import sustain from '../assets/sustain.png';
 
 export default function LandingPage() {
     return (
@@ -53,6 +56,14 @@ export default function LandingPage() {
                     <Grid container spacing={4} alignItems="center">
                         <Grid item xs={12} md={4}>
                             <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
+                                <img
+                                    src={easy}
+                                    style={{
+                                        maxWidth: '100%',
+                                        height: 'auto',
+                                        marginBottom: '1rem'
+                                    }}
+                                />
                                 <Typography variant="h5" component="h3" gutterBottom>
                                     Simple to Use
                                 </Typography>
@@ -63,6 +74,14 @@ export default function LandingPage() {
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
+                                <img
+                                    src={realtime}
+                                    style={{
+                                        maxWidth: '100%',
+                                        height: 'auto',
+                                        marginBottom: '1rem'
+                                    }}
+                                />
                                 <Typography variant="h5" component="h3" gutterBottom>
                                     Real-Time Updates
                                 </Typography>
@@ -73,6 +92,14 @@ export default function LandingPage() {
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
+                                <img
+                                    src={sustain}
+                                    style={{
+                                        maxWidth: '100%',
+                                        height: 'auto',
+                                        marginBottom: '1rem'
+                                    }}
+                                />
                                 <Typography variant="h5" component="h3" gutterBottom>
                                     Sustainable Future
                                 </Typography>
