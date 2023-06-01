@@ -1,5 +1,4 @@
 #Read in TPO file and send data to CVC3 database 
-#Need to change database when we get our own
 import sys
 import pandas as pd
 from sqlalchemy import create_engine, text
@@ -41,7 +40,7 @@ else:
 #Create connection to CVC3
 #DB type, DB username, DB password, DB name, DB drivers
 engine = create_engine(
-    'mssql+pyodbc://cvc3_rw:BonedUnclampedJogging4$@wfic-cvc3-sql.campus.cu.clemson.edu/testdb?'
+    'mssql+pyodbc://cvc3_rw:BonedUnclampedJogging4$@wfic-cvc3-sql.campus.cu.clemson.edu/WoodProductsTracking?'
     'driver=ODBC+Driver+17+for+SQL+Server')
 try:
     connection = engine.connect()
@@ -52,9 +51,9 @@ except:
 #Send file to DB
 #If column not in BD, add then send 
 try:
-    df.to_sql('TPOtest', con=engine, if_exists='append', index=False)
+    df.to_sql('TPOdata', con=engine, if_exists='append', index=False)
 except:
-    query = text(f"SELECT * FROM TPOtest")
+    query = text(f"SELECT * FROM TPOdata")
     result = connection.execute(query)
     connection.commit()
     
@@ -63,12 +62,12 @@ except:
         if dfColumn not in dbColumns:
             colType = convertDataType(str(df[dfColumn].dtypes))
             
-            newQuery = text(f'ALTER TABLE TPOtest ADD {dfColumn} {colType}')
+            newQuery = text(f'ALTER TABLE TPOdata ADD {dfColumn} {colType}')
             connection.execute(newQuery)
             connection.commit()
 finally:
     try:
-        df.to_sql('TPOtest', con=engine, if_exists='append', index=False)    
+        df.to_sql('TPOdata', con=engine, if_exists='append', index=False)    
     except:
         print("Error: Unable to transfer file")
     finally:
