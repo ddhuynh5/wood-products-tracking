@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
-    "data"
+    "data",
+    "users",
+    "carbon"
 ]
 
 MIDDLEWARE = [
