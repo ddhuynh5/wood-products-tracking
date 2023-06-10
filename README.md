@@ -91,3 +91,6 @@ File Structure:
         - Create a pull request to merge <new_branch_name> with main
         - Wait for approval from reviewer
         - Once approved, squash commits and merge
+    - If installing new libraries, after installation:
+        - Backend: (inside /backend) pip freeze > requirements.txt
+        - Frontend: package.json should update as you install node modules
