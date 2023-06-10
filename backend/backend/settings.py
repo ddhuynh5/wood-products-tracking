@@ -15,7 +15,13 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
+
 SECRET = os.getenv("SECRET")
+USER_NAME = os.environ.get("DB_USER")
+PASSWORD = os.environ.get("DB_PASSWORD")
+HOST_ADDRESS = os.environ.get("DB_HOST")
+DRIVER = os.environ.get("DB_DRIVER")
+DATABASE_NAME = os.environ.get("DB_NAME")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -84,9 +90,15 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+        "ENGINE": "mssql",
+        "NAME": DATABASE_NAME,
+        "USER": USER_NAME,
+        "PASSWORD": PASSWORD,
+        "HOST": HOST_ADDRESS,
+        "PORT": "1433",
+        "OPTIONS": {"driver": DRIVER, 
+        },
+    },
 }
 
 
