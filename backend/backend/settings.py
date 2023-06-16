@@ -98,7 +98,8 @@ DATABASES = {
         "PASSWORD": PASSWORD,
         "HOST": HOST_ADDRESS,
         "PORT": "1433",
-        "OPTIONS": {"driver": DRIVER, 
+        "OPTIONS": {
+            "driver": DRIVER,
         },
     },
 }
