@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,21 +15,57 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link as RLink } from "react-router-dom";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { login } from './Authentication';
+
 const theme = createTheme();
 
 function SignIn() {
-    const handleSubmit = (event) => {
+    const [formValues, setFormValues] = useState({
+        email: '',
+        password: ''
+    });
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormValues((prevFormValues) => ({
+            ...prevFormValues,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-        this.event.history.push("/signin");
+        setIsSubmitted(true);
+
+        try {
+            const response = await login(formValues);
+
+            if (response) {
+                toast.success("Login Successful!");
+                window.location = "/dash";
+            }
+        }
+        catch (error) {
+            const { "Error": msg } = error;
+            toast.error(msg);
+        }
+    };
+
+    const isFieldEmpty = (fieldName) => {
+        return isSubmitted && formValues[fieldName] === '';
+    };
+
+    const isFormValid = () => {
+        return Object.values(formValues).every((value) => value !== '');
     };
 
     return (
         <ThemeProvider theme={theme}>
+            <ToastContainer />
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -55,6 +92,9 @@ function SignIn() {
                             name="email"
                             autoComplete="email"
                             autoFocus
+                            value={formValues.email}
+                            onChange={handleChange}
+                            error={isFieldEmpty('email')}
                         />
                         <TextField
                             margin="normal"
@@ -65,6 +105,9 @@ function SignIn() {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            value={formValues.password}
+                            onChange={handleChange}
+                            error={isFieldEmpty('password')}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
@@ -75,8 +118,8 @@ function SignIn() {
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                            component={RLink}
-                            to="/dash"
+                            disabled={!isFormValid()}
+                            onClick={handleSubmit}
                         >
                             Sign In
                         </Button>
