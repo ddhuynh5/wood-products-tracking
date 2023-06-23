@@ -1,33 +1,83 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import { Link as RLink } from "react-router-dom";
+
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+/* import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox'; */
+import { Box, Button, Grid, Link, Select, MenuItem, InputLabel } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link as RLink } from "react-router-dom";
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { signup } from './Authentication';
 
 const theme = createTheme();
 
 export default function SignUp() {
-    const handleSubmit = (event) => {
+    const [formValues, setFormValues] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        city: '',
+        zip: '',
+        carbonProjectId: '',
+        role: '',
+    });
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormValues((prevFormValues) => ({
+            ...prevFormValues,
+            [name]: value,
+        }));
+    };
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        setIsSubmitted(true);
+
+        try {
+            const response = await signup(formValues);
+
+            if (response) {
+                toast.success("Welcome to WPT!");
+                window.location = "/dash";
+            }
+        }
+        catch (error) {
+            const { "Duplicate Error": msg } = error;
+            toast.error(msg);
+        }
+    };
+
+    const isFieldEmpty = (fieldName) => {
+        if (fieldName === "carbonProjectId" && formValues.role === "Landowner") {
+            return isSubmitted && formValues[fieldName] === "";
+        }
+        return false;
+    };
+
+    const isFormValid = () => {
+        if (formValues.role === "") {
+            return false;
+        }
+        if (formValues.role === "Landowner") {
+            return Object.values(formValues).every((value) => value !== "");
+        }
+        return true;
     };
 
     return (
         <ThemeProvider theme={theme}>
+            <ToastContainer />
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -55,6 +105,9 @@ export default function SignUp() {
                                     id="firstName"
                                     label="First Name"
                                     autoFocus
+                                    value={formValues.firstName}
+                                    onChange={handleChange}
+                                    error={isFieldEmpty('firstName')}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -65,6 +118,9 @@ export default function SignUp() {
                                     label="Last Name"
                                     name="lastName"
                                     autoComplete="family-name"
+                                    value={formValues.lastName}
+                                    onChange={handleChange}
+                                    error={isFieldEmpty('lastName')}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -75,6 +131,9 @@ export default function SignUp() {
                                     label="Email Address"
                                     name="email"
                                     autoComplete="email"
+                                    value={formValues.email}
+                                    onChange={handleChange}
+                                    error={isFieldEmpty('email')}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -86,6 +145,9 @@ export default function SignUp() {
                                     type="password"
                                     id="password"
                                     autoComplete="new-password"
+                                    value={formValues.password}
+                                    onChange={handleChange}
+                                    error={isFieldEmpty('password')}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -97,6 +159,9 @@ export default function SignUp() {
                                     type="city"
                                     id="city"
                                     autoComplete="city"
+                                    value={formValues.city}
+                                    onChange={handleChange}
+                                    error={isFieldEmpty('city')}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -108,33 +173,61 @@ export default function SignUp() {
                                     type="zip"
                                     id="zip"
                                     autoComplete="zip-code"
+                                    value={formValues.zip}
+                                    onChange={handleChange}
+                                    error={isFieldEmpty('zip')}
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField
-                                    required
+                                <InputLabel id="role">Select a Role</InputLabel>
+                                <Select
                                     fullWidth
-                                    name="Carbon Project Id Number"
-                                    label="Carbon Project Id Number"
-                                    type="Carbon Project Id Number"
-                                    id="Carbon Project Id Number"
-                                    autoComplete="Carbon Project Id Number"
-                                />
+                                    name="role"
+                                    labelId="role"
+                                    value={formValues.role}
+                                    onChange={handleChange}
+                                    error={isFieldEmpty('role')}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    <MenuItem value="Landowner">Landowner</MenuItem>
+                                    <MenuItem value="Mill">Mill</MenuItem>
+                                    <MenuItem value="Other">Other</MenuItem>
+                                </Select>
                             </Grid>
+                            {formValues["role"] == 'Landowner' && (
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        fullWidth
+                                        name="carbonProjectId"
+                                        label="Carbon Project Id Number"
+                                        type="text"
+                                        id="carbonProjectId"
+                                        autoComplete="carbonProjectId"
+                                        value={formValues.carbonProjectId}
+                                        onChange={handleChange}
+                                        error={isFieldEmpty('carbonProjectId')}
+                                    />
+                                </Grid>
+                            )}
+
                             {/* <Grid item xs={12}>
                                 <FormControlLabel
                                     control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                    label="I want to receive inspiration, marketing promotions and updates via email."
+                                    label="I want to receive updates via email."
                                 />
                             </Grid> */}
+
                         </Grid>
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                            component={RLink}
-                            to="/dash"
+                            disabled={!isFormValid()}
+                            onClick={handleSubmit}
                         >
                             Sign Up
                         </Button>
