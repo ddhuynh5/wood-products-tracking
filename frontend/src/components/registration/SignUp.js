@@ -11,6 +11,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,8 +30,12 @@ export default function SignUp() {
         password: '',
         city: '',
         zip: '',
-        carbonProjectId: '',
         role: '',
+        carbonProjectId: '',
+        woodQuality: '',
+        species: '',
+        year: '',
+        harvest: '',
     });
     const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -37,6 +44,21 @@ export default function SignUp() {
         setFormValues((prevFormValues) => ({
             ...prevFormValues,
             [name]: value,
+        }));
+    };
+
+    const handleDate = (date) => {
+        const dateObject = new Date(date.$d);
+        const year = dateObject.getFullYear().toString();
+        const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
+        const day = dateObject.getDate().toString().padStart(2, "0");
+
+        const formatted = `${year}-${month}-${day}`;
+        console.log(formatted)
+
+        setFormValues((prevFormValues) => ({
+            ...prevFormValues,
+            year: formatted
         }));
     };
 
@@ -197,20 +219,78 @@ export default function SignUp() {
                                 </Select>
                             </Grid>
                             {formValues["role"] == 'Landowner' && (
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        name="carbonProjectId"
-                                        label="Carbon Project Id Number"
-                                        type="text"
-                                        id="carbonProjectId"
-                                        autoComplete="carbonProjectId"
-                                        value={formValues.carbonProjectId}
-                                        onChange={handleChange}
-                                        error={isFieldEmpty('carbonProjectId')}
-                                    />
-                                </Grid>
+                                <>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            required
+                                            fullWidth
+                                            name="carbonProjectId"
+                                            label="Carbon Project Id Number"
+                                            type="text"
+                                            id="carbonProjectId"
+                                            autoComplete="carbonProjectId"
+                                            value={formValues.carbonProjectId}
+                                            onChange={handleChange}
+                                            error={isFieldEmpty('carbonProjectId')}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            required
+                                            fullWidth
+                                            name="woodQuality"
+                                            label="Wood Quality"
+                                            type="text"
+                                            id="woodQuality"
+                                            autoComplete="woodQuality"
+                                            value={formValues.woodQuality}
+                                            onChange={handleChange}
+                                            error={isFieldEmpty('woodQuality')}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            required
+                                            fullWidth
+                                            name="species"
+                                            label="Species of Wood"
+                                            type="text"
+                                            id="species"
+                                            autoComplete="species"
+                                            value={formValues.species}
+                                            onChange={handleChange}
+                                            error={isFieldEmpty('species')}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DatePicker
+                                                name="year"
+                                                label="Year of Harvest"
+                                                id="year"
+                                                autoComplete="year"
+                                                value={formValues.year}
+                                                onChange={handleDate}
+                                                dateFormat="dd/MM/yyyy"
+                                                error={isFieldEmpty('year')}
+                                            />
+                                        </LocalizationProvider>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            required
+                                            fullWidth
+                                            name="harvest"
+                                            label="Harvest Location"
+                                            type="text"
+                                            id="harvest"
+                                            autoComplete="harvest"
+                                            value={formValues.harvest}
+                                            onChange={handleChange}
+                                            error={isFieldEmpty('harvest')}
+                                        />
+                                    </Grid>
+                                </>
                             )}
 
                             {/* <Grid item xs={12}>

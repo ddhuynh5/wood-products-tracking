@@ -18,4 +18,35 @@ class Users(models.Model):
 
     def __str__(self):
         """ For debugging purposes """
+
         return f"{str(self.email)} {str(self.role_id)}"
+    
+
+class LandOwner(models.Model):
+    """ LandOwner Schema """
+
+    user_id = models.AutoField(primary_key=True)
+    carbon_project_id = models.IntegerField()
+    wood_quality = models.CharField(max_length=510)
+    species = models.CharField(max_length=510)
+    year_of_harvest = models.DateField()
+    harvest_location = models.CharField(max_length=510)
+
+    class Meta:
+        db_table = "landowner"
+        managed = False
+
+    def __str__(self):
+        """ For debugging purposes """
+
+        return f"{str(self.carbon_project_id)} {str(self.wood_quality)}"
+    
+
+class Mill(models.Model):
+    """ Mill Schema (still need to figure out) """
+
+    user_id = models.AutoField(primary_key=True)
+
+    class Meta:
+        db_table = "mill"
+        managed = False

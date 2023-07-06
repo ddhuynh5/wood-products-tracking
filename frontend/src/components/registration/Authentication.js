@@ -8,7 +8,11 @@ export const signup = async ({
     password,
     city,
     zip,
-    carbonProjectId
+    carbonProjectId,
+    woodQuality,
+    species,
+    year,
+    harvest,
 }) => {
     try {
         const response = await axios.post('http://localhost:8000/signup', {
@@ -19,7 +23,11 @@ export const signup = async ({
             password,
             city,
             zip,
-            carbonProjectId
+            carbonProjectId,
+            woodQuality,
+            species,
+            year,
+            harvest,
         })
         return response.data;
     } catch (error) {
