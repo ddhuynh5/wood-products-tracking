@@ -11,9 +11,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -32,10 +29,10 @@ export default function SignUp() {
         zip: '',
         role: '',
         carbonProjectId: '',
-        woodQuality: '',
-        species: '',
-        year: '',
-        harvest: '',
+        forestType: '',
+        productType: '',
+        location: '',
+        size: ''
     });
     const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -44,21 +41,6 @@ export default function SignUp() {
         setFormValues((prevFormValues) => ({
             ...prevFormValues,
             [name]: value,
-        }));
-    };
-
-    const handleDate = (date) => {
-        const dateObject = new Date(date.$d);
-        const year = dateObject.getFullYear().toString();
-        const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
-        const day = dateObject.getDate().toString().padStart(2, "0");
-
-        const formatted = `${year}-${month}-${day}`;
-        console.log(formatted)
-
-        setFormValues((prevFormValues) => ({
-            ...prevFormValues,
-            year: formatted
         }));
     };
 
@@ -81,7 +63,7 @@ export default function SignUp() {
     };
 
     const isFieldEmpty = (fieldName) => {
-        if (fieldName === "carbonProjectId" && formValues.role === "Landowner") {
+        if (formValues.role === "Landowner") {
             return isSubmitted && formValues[fieldName] === "";
         }
         return false;
@@ -91,9 +73,21 @@ export default function SignUp() {
         if (formValues.role === "") {
             return false;
         }
+
         if (formValues.role === "Landowner") {
-            return Object.values(formValues).every((value) => value !== "");
+            const valuesToValidate = Object.keys(formValues)
+                .filter((key) => key !== "productType" && key !== "carbonProjectId")
+                .map((key) => formValues[key]);
+
+            return valuesToValidate.every((value) => value !== "");
+        } else if (formValues.role === "Mill") {
+            const valuesToValidate = Object.keys(formValues)
+                .filter((key) => key !== "forestType" && key !== "size" && key !== "carbonProjectId")
+                .map((key) => formValues[key]);
+
+            return valuesToValidate.every((value) => value !== "");
         }
+
         return true;
     };
 
@@ -210,15 +204,11 @@ export default function SignUp() {
                                     onChange={handleChange}
                                     error={isFieldEmpty('role')}
                                 >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
                                     <MenuItem value="Landowner">Landowner</MenuItem>
                                     <MenuItem value="Mill">Mill</MenuItem>
-                                    <MenuItem value="Other">Other</MenuItem>
                                 </Select>
                             </Grid>
-                            {formValues["role"] == 'Landowner' && (
+                            {formValues["role"] === "Landowner" && (
                                 <>
                                     <Grid item xs={12}>
                                         <TextField
@@ -231,63 +221,81 @@ export default function SignUp() {
                                             autoComplete="carbonProjectId"
                                             value={formValues.carbonProjectId}
                                             onChange={handleChange}
-                                            error={isFieldEmpty('carbonProjectId')}
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField
                                             required
                                             fullWidth
-                                            name="woodQuality"
-                                            label="Wood Quality"
+                                            name="forestType"
+                                            label="Forest Type"
                                             type="text"
-                                            id="woodQuality"
-                                            autoComplete="woodQuality"
-                                            value={formValues.woodQuality}
+                                            id="forestType"
+                                            autoComplete="forestType"
+                                            value={formValues.forestType}
                                             onChange={handleChange}
-                                            error={isFieldEmpty('woodQuality')}
+                                            error={isFieldEmpty('forestType')}
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField
                                             required
                                             fullWidth
-                                            name="species"
-                                            label="Species of Wood"
+                                            name="location"
+                                            label="Location"
                                             type="text"
-                                            id="species"
-                                            autoComplete="species"
-                                            value={formValues.species}
+                                            id="location"
+                                            autoComplete="location"
+                                            value={formValues.location}
                                             onChange={handleChange}
-                                            error={isFieldEmpty('species')}
+                                            error={isFieldEmpty('location')}
                                         />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <DatePicker
-                                                name="year"
-                                                label="Year of Harvest"
-                                                id="year"
-                                                autoComplete="year"
-                                                value={formValues.year}
-                                                onChange={handleDate}
-                                                dateFormat="dd/MM/yyyy"
-                                                error={isFieldEmpty('year')}
-                                            />
-                                        </LocalizationProvider>
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField
                                             required
                                             fullWidth
-                                            name="harvest"
-                                            label="Harvest Location"
+                                            name="size"
+                                            label="Land Size"
                                             type="text"
-                                            id="harvest"
-                                            autoComplete="harvest"
-                                            value={formValues.harvest}
+                                            id="size"
+                                            autoComplete="size"
+                                            value={formValues.size}
                                             onChange={handleChange}
-                                            error={isFieldEmpty('harvest')}
+                                            error={isFieldEmpty('size')}
+                                        />
+                                    </Grid>
+                                </>
+                            )}
+
+                            {formValues["role"] === "Mill" && (
+                                <>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            required
+                                            fullWidth
+                                            name="location"
+                                            label="Location"
+                                            type="text"
+                                            id="location"
+                                            autoComplete="location"
+                                            value={formValues.location}
+                                            onChange={handleChange}
+                                            error={isFieldEmpty('location')}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            required
+                                            fullWidth
+                                            name="productType"
+                                            label="Product Type"
+                                            type="text"
+                                            id="productType"
+                                            autoComplete="productType"
+                                            value={formValues.productType}
+                                            onChange={handleChange}
+                                            error={isFieldEmpty('productType')}
                                         />
                                     </Grid>
                                 </>

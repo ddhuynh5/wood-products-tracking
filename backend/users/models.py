@@ -27,10 +27,9 @@ class LandOwner(models.Model):
 
     user_id = models.AutoField(primary_key=True)
     carbon_project_id = models.IntegerField()
-    wood_quality = models.CharField(max_length=510)
-    species = models.CharField(max_length=510)
-    year_of_harvest = models.DateField()
-    harvest_location = models.CharField(max_length=510)
+    forest_type = models.CharField(max_length=510)
+    location = models.CharField(max_length=510)
+    size = models.CharField(max_length=510)
 
     class Meta:
         db_table = "landowner"
@@ -39,14 +38,21 @@ class LandOwner(models.Model):
     def __str__(self):
         """ For debugging purposes """
 
-        return f"{str(self.carbon_project_id)} {str(self.wood_quality)}"
+        return f"{str(self.user_id)} {str(self.forest_type)}"
     
 
 class Mill(models.Model):
     """ Mill Schema (still need to figure out) """
 
     user_id = models.AutoField(primary_key=True)
+    location = models.CharField(max_length=510)
+    product_type = models.CharField(max_length=510)
 
     class Meta:
         db_table = "mill"
         managed = False
+    
+    def __str__(self):
+        """ For debugging purposes """
+
+        return f"{str(self.user_id)} {str(self.product_type)}"

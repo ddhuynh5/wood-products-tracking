@@ -15,14 +15,52 @@ import {
     ButtonBase,
     Divider
 } from '@mui/material';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Fade from '@mui/material/Fade';
 import CloseIcon from '@mui/icons-material/Close';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { logout } from './registration/Authentication';
 
 export default function Header() {
     const [open, setOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const openMenu = Boolean(anchorEl);
+
+    const firstName = sessionStorage.getItem('firstName');
+    const lastName = sessionStorage.getItem('lastName');
+
+    const handleAccount = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     const handleDrawerToggle = () => {
         setOpen(!open);
+    };
+
+    const handleLogout = () => {
+        try {
+            logout();
+
+            toast.success("Logout Successful!");
+            window.location = "/signin";
+        }
+        catch (error) {
+            const { "Error": msg } = error;
+            toast.error(msg);
+        }
     };
 
     return (
@@ -109,20 +147,69 @@ export default function Header() {
                 >
                     <Typography variant="body1">Contact</Typography>
                 </ButtonBase>
-                <Button
-                    variant="outlined"
-                    color="inherit"
-                    sx={{
-                        ml: 5,
-                        mt: 0,
-                        display: { xs: 'none', sm: 'block' },
-                        whiteSpace: 'nowrap'
-                    }}
-                    component={Link}
-                    to="/signin"
-                >
-                    Login
-                </Button>
+                {firstName === "" || lastName === "" ? (
+                    <>
+                        <Button
+                            variant="outlined"
+                            color="inherit"
+                            sx={{
+                                ml: 5,
+                                mt: 0,
+                                display: { xs: 'none', sm: 'block' },
+                                whiteSpace: 'nowrap'
+                            }}
+                            component={Link}
+                            to="/signin"
+                        >
+                            Login
+                        </Button>
+                    </>
+                ) : (
+                    <>
+                        <Button
+                            variant="outlined"
+                            color="inherit"
+                            sx={{
+                                ml: 5,
+                                mt: 0,
+                                display: { xs: 'none', sm: 'block' },
+                                whiteSpace: 'nowrap'
+                            }}
+                            onClick={handleAccount}
+                        >
+                            {firstName} {lastName}
+                        </Button>
+                        <Menu
+                            id="fade-menu"
+                            MenuListProps={{
+                                'aria-labelledby': 'fade-button',
+                            }}
+                            anchorEl={anchorEl}
+                            open={openMenu}
+                            onClose={handleClose}
+                            TransitionComponent={Fade}
+                        >
+                            <MenuItem onClick={handleClose}>
+                                <ListItemIcon>
+                                    <PersonIcon fontSize="small" />
+                                </ListItemIcon>
+                                Profile
+                            </MenuItem>
+                            <MenuItem onClick={handleClose}>
+                                <ListItemIcon>
+                                    <Settings fontSize="small" />
+                                </ListItemIcon>
+                                Settings
+                            </MenuItem>
+                            <MenuItem onClick={() => { handleLogout(); handleClose(); }}>
+                                <ListItemIcon>
+                                    <Logout fontSize="small" />
+                                </ListItemIcon>
+                                Logout
+                            </MenuItem>
+                        </Menu>
+                    </>
+                )}
 
             </Toolbar>
         </AppBar>

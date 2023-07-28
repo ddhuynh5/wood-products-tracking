@@ -43,7 +43,13 @@ def signup(request):
             required_fields = ["email", "password", "firstName", "lastName", "role"]
 
             if data["role"] == "Landowner":
-                required_fields.extend(["carbonProjectId", "woodQuality", "species", "year", "harvest"])
+                if data["carbonProjectId"]:
+                    required_fields.extend(["carbonProjectId"])
+                required_fields.extend(["forestType", "size", "location"])
+            elif data["role"] == "Mill":
+                required_fields.extend(["productType", "location"])
+
+            print(required_fields)
 
             for field in required_fields:
                 if not data.get(field):
@@ -51,8 +57,7 @@ def signup(request):
 
             roles = {
                 'Landowner': 1,
-                'Mill': 2,
-                'Other': 3
+                'Mill': 2
             }
 
             password = bcrypt.hashpw(data["password"].encode(), bcrypt.gensalt())
@@ -74,17 +79,18 @@ def signup(request):
                 if data["role"] == "Landowner":
                     land = LandOwner.objects.create(
                         user_id=user.user_id,
-                        carbon_project_id=data["carbonProjectId"],
-                        wood_quality = data["woodQuality"],
-                        species = data["species"],
-                        year_of_harvest = data["year"],
-                        harvest_location = data["harvest"]
+                        carbon_project_id=data["carbonProjectId"] if "carbonProjectId" in data else "",
+                        forest_type=data["forestType"],
+                        location=data["location"],
+                        size=data["size"]
                     )
                     print("Created LandOwner:", land)
 
                 elif data["role"] == "Mill":
                     mill = Mill.objects.create(
-                        user_id=user.user_id
+                        user_id=user.user_id,
+                        location=data["location"],
+                        product_type=data["productType"]
                     )
                     print("Created Mill:", mill)
 
@@ -118,4 +124,4 @@ def login(request):
             else:
                 return JsonResponse({"Error": "Incorrect password"}, status=400)
         except ObjectDoesNotExist:
-            return JsonResponse({"Error": "No account found"}, status=400)
+            return JsonResponse({"Error": "No account found, check your email/password!"}, status=400)
