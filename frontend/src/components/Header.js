@@ -147,7 +147,7 @@ export default function Header() {
                 >
                     <Typography variant="body1">Contact</Typography>
                 </ButtonBase>
-                {firstName === "" || lastName === "" ? (
+                {!firstName || !lastName ? (
                     <>
                         <Button
                             variant="outlined"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -60,6 +60,15 @@ function SignIn() {
     const isFormValid = () => {
         return Object.values(formValues).every((value) => value !== '');
     };
+
+    // check if already logged in
+    useEffect(() => {
+        const email = sessionStorage.getItem("email");
+
+        if (email) {
+            window.location = "/dash";
+        }
+    }, []);
 
     return (
         <ThemeProvider theme={theme}>
